@@ -7,7 +7,7 @@ class CanvasData {
 
 function initCanvas(num) {
     const canvas = document.getElementById("canvas");
-    canvas.width = canvas.parentElement.clientWidth;
+    canvas.width = 2000;
     canvas.height = canvas.width*2;
     CanvasData.drawn = 0;
     CanvasData.num = num;
