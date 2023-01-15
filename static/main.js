@@ -8,17 +8,29 @@ class CanvasData {
 function initCanvas(num) {
     const canvas = document.getElementById("canvas");
     canvas.width = canvas.parentElement.clientWidth;
-    canvas.height = canvas.width * 2;
+    canvas.height = canvas.width*2;
     CanvasData.drawn = 0;
     CanvasData.num = num;
     CanvasData.width = canvas.width;
     CanvasData.height = canvas.height;
+
+
+    canvas.height+=canvas.width*0.1;
+
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.font = (canvas.width*0.1*0.8) + "px Arial";
+    ctx.fillStyle = "black";
+    ctx.fillText(new Date().toLocaleDateString(), canvas.width-5*canvas.width*0.1*0.8, canvas.height-canvas.width*0.1*0.1);
+
     drawLines(canvas, num);
 }
 
 function drawLines(canvas, num) {
-    const width = canvas.width;
-    const height = canvas.height;
+    const width = CanvasData.width;
+    const height = CanvasData.height;
     const ctx = canvas.getContext("2d");
     ctx.color = "#DCDCDC";
     //边框线
@@ -99,10 +111,10 @@ function getToPut() {
 }
 
 function getPicSize() {
-    if (CanvasData.num===7 && CanvasData.drawn===0) {
-        return [CanvasData.height/4, CanvasData.width, true];
+    if (CanvasData.num === 7 && CanvasData.drawn === 0) {
+        return [CanvasData.height / 4, CanvasData.width, true];
     } else {
-        return [CanvasData.height/4, CanvasData.width/2, false];
+        return [CanvasData.height / 4, CanvasData.width / 2, false];
     }
 }
 
@@ -112,10 +124,10 @@ function min(width, height) {
 
 function cutPicInto2by1(pic) {
     let pic2by1 = document.createElement("canvas");
-    pic2by1.width = min(pic.width, pic.height*2);
+    pic2by1.width = min(pic.width, pic.height * 2);
     pic2by1.height = pic2by1.width / 2;
     let ctx = pic2by1.getContext("2d");
-    ctx.drawImage(pic, (pic2by1.width-pic.width)/2, (pic2by1.height-pic.height)/2);
+    ctx.drawImage(pic, (pic2by1.width - pic.width) / 2, (pic2by1.height - pic.height) / 2);
     return pic2by1;
 }
 
@@ -125,7 +137,7 @@ function cutPicInto1by1(pic) {
     // noinspection JSSuspiciousNameCombination
     pic1by1.height = pic1by1.width;
     let ctx = pic1by1.getContext("2d");
-    ctx.drawImage(pic, (pic1by1.width-pic.width)/2, (pic1by1.height-pic.height)/2);
+    ctx.drawImage(pic, (pic1by1.width - pic.width) / 2, (pic1by1.height - pic.height) / 2);
     return pic1by1;
 }
 
@@ -142,4 +154,13 @@ function drawPic(pic) {
     }
     ctx.drawImage(pic, 0, 0, pic.width, pic.height, toPut[1], toPut[0], picSize[1], picSize[0]);
     CanvasData.drawn++;
+}
+
+function download() {
+    const canvas = document.getElementById("canvas");
+    const link = document.createElement("a");
+    link.href = canvas.toDataURL("image/jpeg");
+    const date = new Date();
+    link.download = "拼接图片" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + ".jpeg";
+    link.click();
 }
