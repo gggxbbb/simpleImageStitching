@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>小组图片拼接</title>
+    <link rel="stylesheet" href="/static/picocss/css/pico.css">
+    <link rel="stylesheet" href="/static/main.css">
+    <script src="/static/main.js"></script>
+</head>
+<body>
+
+<main class="container">
+    <h1>小组图片拼接</h1>
+    <!-- 选择7人或8人 -->
+    <form name="numForm" id="numForm">
+        <fieldset class="horizontal_item">
+            <legend>选择人数</legend>
+            <label class="horizontal_item"><input type="radio" name="num" value="7" checked>7人</label>
+            <label class="horizontal_item"><input type="radio" name="num" value="8">8人</label>
+        </fieldset>
+        <fieldset class="horizontal_item">
+            <legend>添加图片</legend>
+            <label class="horizontal_item"><input type="file" name="file" accept="image/*"></label>
+        </fieldset>
+    </form>
+    <button id="btn">生成</button>
+
+    <article>
+        <canvas id="canvas"></canvas>
+    </article>
+
+    <script>
+        const num = document.forms['numForm'].num.value;
+        initCanvas(parseInt(num));
+        // 监听 7人或8人 的选择
+        document.forms['numForm'].num.forEach((item) => {
+            item.addEventListener('change', (e) => {
+                initCanvas(parseInt(e.target.value));
+            });
+        });
+        document.forms['numForm'].file.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function () {
+                const img = new Image();
+                // noinspection JSValidateTypes
+                img.src = reader.result;
+                img.onload = function () {
+                    drawPic(img);
+                    e.target.value = '';
+                }
+            }
+        });
+    </script>
+</main>
+
+</body>
+</html>
