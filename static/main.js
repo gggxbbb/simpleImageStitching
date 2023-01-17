@@ -153,8 +153,8 @@ function drawPic(pic, text = "") {
         pic = cutPicInto1by1(pic);
     }
     ctx.drawImage(pic, 0, 0, pic.width, pic.height, toPut[1], toPut[0], picSize[1], picSize[0]);
-    ctx.font = (canvas.width * 0.1 * 0.5) + "px Arial";
-    ctx.fillStyle = "#00009C";
+    ctx.font = (canvas.width * 0.1 * 0.6) + "px Arial";
+    ctx.fillStyle = "#C0C0C0";
     ctx.fillText(text, toPut[1] + CanvasData.width / 20, toPut[0] + CanvasData.width / 20);
     CanvasData.drawn++;
 }
