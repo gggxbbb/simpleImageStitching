@@ -8,22 +8,22 @@ class CanvasData {
 function initCanvas(num) {
     const canvas = document.getElementById("canvas");
     canvas.width = 2000;
-    canvas.height = canvas.width*2;
+    canvas.height = canvas.width * 2;
     CanvasData.drawn = 0;
     CanvasData.num = num;
     CanvasData.width = canvas.width;
     CanvasData.height = canvas.height;
 
 
-    canvas.height+=canvas.width*0.1;
+    canvas.height += canvas.width * 0.1;
 
     const ctx = canvas.getContext("2d");
     ctx.fillStyle = "#FFFFFF";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.font = (canvas.width*0.1*0.8) + "px Arial";
+    ctx.font = (canvas.width * 0.1 * 0.8) + "px Arial";
     ctx.fillStyle = "black";
-    ctx.fillText(new Date().toLocaleDateString(), canvas.width-5*canvas.width*0.1*0.8, canvas.height-canvas.width*0.1*0.1);
+    ctx.fillText(new Date().toLocaleDateString(), canvas.width - 5 * canvas.width * 0.1 * 0.8, canvas.height - canvas.width * 0.1 * 0.1);
 
     drawLines(canvas, num);
 }
@@ -141,7 +141,7 @@ function cutPicInto1by1(pic) {
     return pic1by1;
 }
 
-function drawPic(pic) {
+function drawPic(pic, text = "") {
     let toPut = getToPut();
     let picSize = getPicSize();
     const canvas = document.getElementById("canvas");
@@ -153,6 +153,9 @@ function drawPic(pic) {
         pic = cutPicInto1by1(pic);
     }
     ctx.drawImage(pic, 0, 0, pic.width, pic.height, toPut[1], toPut[0], picSize[1], picSize[0]);
+    ctx.font = (canvas.width * 0.1 * 0.5) + "px Arial";
+    ctx.fillStyle = "#00009C";
+    ctx.fillText(text, toPut[1] + CanvasData.width / 20, toPut[0] + CanvasData.width / 20);
     CanvasData.drawn++;
 }
 
