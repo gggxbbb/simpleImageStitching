@@ -64,7 +64,8 @@
                 document.querySelector('input[name="num"][value="' + url_num + '"]').checked = true;
             }
             if (url_footer) {
-                document.querySelector('input[name="footer"]').value = url_footer;
+                document.forms['numForm'].footer.value = url_footer;
+                document.forms['footerForm'].footer.value = url_footer;
             }
 
             const num = document.forms['numForm'].num.value;
