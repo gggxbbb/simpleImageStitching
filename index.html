@@ -16,18 +16,24 @@
     <h1>小组图片拼接</h1>
     <!-- 选择7人或8人 -->
     <form name="numForm" id="numForm">
-        <fieldset id="num_choice">
-            <legend>选择人数</legend>
-            <label><input type="radio" name="num" value="7"
-                          checked>7人</label>
-            <label><input type="radio" name="num"
-                          value="8">8人</label>
+        <fieldset class="form_root" name="team">
+            <legend>小组设置(添加图片后不可修改)</legend>
+            <fieldset id="num_choice">
+                <legend>选择人数</legend>
+                <label><input type="radio" name="num" value="7"
+                              checked>7人</label>
+                <label><input type="radio" name="num"
+                              value="8">8人</label>
+            </fieldset>
+            <label>底部额外文字(可选)<input type="text" name="footer"
+                                            placeholder="张三组"
+                                            maxlength="5"></label>
         </fieldset>
-        <fieldset>
+        <fieldset class="form_root" name="pic">
             <legend>添加图片</legend>
             <label>额外文字(可选)<input type="text" name="text"
-                                        class="umami--click--change-text"
-                                        placeholder="张三 06:30"></label>
+                                        maxlength="10"
+                                        placeholder="李四 07:30"></label>
             <label><input type="checkbox" name="fix" disabled>覆盖上一张</label>
             <label><input type="file" name="file" accept="image/*"></label>
         </fieldset>
@@ -37,24 +43,84 @@
     <article>
         <canvas id="canvas"></canvas>
     </article>
+
+    <form name="footerFrom">
+        <label>底部额外文字(可选)<input type="text" name="footer"
+                                        placeholder="张三组"
+                                        maxlength="5"></label>
+    </form>
     <button id="btn2">生成</button>
 
     <script>
+
+        // 初始化 Canvas
         window.onload = function () {
+
+            // 加载查询参数
+            let url = new URLSearchParams(window.location.search);
+            let url_num = url.get('num');
+            let url_footer = url.get('footer');
+            if (url_num) {
+                document.querySelector('input[name="num"][value="' + url_num + '"]').checked = true;
+            }
+            if (url_footer) {
+                document.querySelector('input[name="footer"]').value = url_footer;
+            }
+
             const num = document.forms['numForm'].num.value;
-            initCanvas(parseInt(num));
+            const text = document.forms['numForm'].text.value;
+            initCanvas(parseInt(num), text);
             umami.trackEvent("Init Canvas", {num: num});
         }
+
+        function genQueryString() {
+            let url = new URLSearchParams();
+            url.set('num', document.forms['numForm'].num.value);
+            url.set('footer', document.forms['numForm'].footer.value);
+            return url.toString();
+        }
+
+        function updateQueryString() {
+            let url = genQueryString();
+            if (url) {
+                window.history.replaceState(null, null, '?' + url);
+            } else {
+                window.history.replaceState(null, null, window.location.pathname);
+            }
+        }
+
         // 监听 7人或8人 的选择
         document.forms['numForm'].num.forEach((item) => {
             item.addEventListener('change', (e) => {
-                initCanvas(parseInt(e.target.value));
+                const text = document.forms['numForm'].footer.value;
+                initCanvas(parseInt(e.target.value), text);
+                updateQueryString();
                 umami.trackEvent("Change Num to" + e.target.value, {num: e.target.value});
-                umami.trackEvent("Init Canvas", {num: e.target.value});
+                umami.trackEvent("Init Canvas", {num: e.target.value, text: text});
             });
         });
+
+        // 监听 底部额外文字 的输入, 同步两个输入框
+        document.forms['numForm'].footer.addEventListener('input', (e) => {
+            if (document.forms['footerFrom'].footer.value !== e.target.value) {
+                document.forms['footerFrom'].footer.value = e.target.value;
+                const num = document.forms['numForm'].num.value;
+                initCanvas(parseInt(num), e.target.value);
+                updateQueryString();
+            }
+        });
+        document.forms['footerFrom'].footer.addEventListener('input', (e) => {
+            if (document.forms['numForm'].footer.value !== e.target.value) {
+                document.forms['numForm'].footer.value = e.target.value;
+                const num = document.forms['numForm'].num.value;
+                initCanvas(parseInt(num), e.target.value);
+                updateQueryString();
+            }
+        });
+
+        // 监听 是否覆盖上一张 的选择
         document.forms['numForm'].fix.addEventListener('change', (e) => {
-            if (CanvasData.drawn===0){
+            if (CanvasData.drawn === 0) {
                 e.target.checked = false;
                 e.target.disabled = true;
             } else {
@@ -62,8 +128,16 @@
                 e.target.disabled = false;
             }
         });
+
+        // 监听 添加图片
         document.forms['numForm'].file.addEventListener('change', (e) => {
-            const text = document.forms['numForm'].text.value;
+            if (CanvasData.drawn === 0) { //若是第一张图片
+                // 禁用 小组设置, 启用 是否覆盖上一张
+                document.forms['numForm'].fix.disabled = false;
+                document.forms['numForm'].team.disabled = true;
+                document.forms['footerFrom'].footer.disabled = true;
+            }
+            const text = document.forms['numForm'].text.value; //图片额外文字
             const file = e.target.files[0];
             const reader = new FileReader();
             reader.readAsDataURL(file);
@@ -73,7 +147,7 @@
                 img.src = reader.result;
                 img.onload = function () {
                     if (document.forms['numForm'].fix.checked && CanvasData.drawn > 0) {
-                        CanvasData.drawn--;
+                        CanvasData.drawn--; //若需要覆盖上一张, 则减少已绘制的图片数量
                     }
                     drawPic(img, text);
                     e.target.value = '';
@@ -82,15 +156,18 @@
                     umami.trackEvent("Add One Picture", {text: text, num: CanvasData.num, index: CanvasData.drawn});
                 }
             }
-            document.forms['numForm'].fix.disabled = false;
         });
+
+        // 监听 两个生成按钮
         document.getElementById("btn").addEventListener('click', () => {
+            const footer = document.forms['numForm'].footer.value;
             download()
-            umami.trackEvent("Download Picture", {num: CanvasData.num, drawn: CanvasData.drawn});
+            umami.trackEvent("Download Picture", {num: CanvasData.num, drawn: CanvasData.drawn, footer: footer});
         })
         document.getElementById("btn2").addEventListener('click', () => {
+            const footer = document.forms['numForm'].footer.value;
             download()
-            umami.trackEvent("Download Picture", {num: CanvasData.num, drawn: CanvasData.drawn});
+            umami.trackEvent("Download Picture", {num: CanvasData.num, drawn: CanvasData.drawn, footer: footer});
         })
     </script>
 

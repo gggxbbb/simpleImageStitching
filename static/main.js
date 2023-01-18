@@ -5,7 +5,7 @@ class CanvasData {
     static height;
 }
 
-function initCanvas(num) {
+function initCanvas(num, text="") {
     const canvas = document.getElementById("canvas");
     canvas.width = 2000;
     canvas.height = canvas.width * 2;
@@ -23,7 +23,10 @@ function initCanvas(num) {
 
     ctx.font = (canvas.width * 0.1 * 0.8) + "px Arial";
     ctx.fillStyle = "black";
-    ctx.fillText(new Date().toLocaleDateString(), canvas.width - 5 * canvas.width * 0.1 * 0.8, canvas.height - canvas.width * 0.1 * 0.1);
+    const date = new Date().toLocaleDateString();
+    ctx.fillText(date, canvas.width - date.length/2 * canvas.width * 0.1 * 0.8, canvas.height - canvas.width * 0.1 * 0.1);
+
+    ctx.fillText(text, canvas.width * 0.1 * 0.1, canvas.height - canvas.width * 0.1 * 0.1);
 
     drawLines(canvas, num);
 }
