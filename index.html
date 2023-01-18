@@ -7,8 +7,8 @@
     <link rel="stylesheet" href="/static/main.css">
     <script src="/static/main.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!--suppress JSUnresolvedLibraryURL -->
-    <script async defer data-website-id="04463641-ed4b-4d0f-af66-c66dec1b5d94" src="https://ana.evax.top/umami.js"></script>
+    <script async defer data-website-id="04463641-ed4b-4d0f-af66-c66dec1b5d94" src="https://ana.evax.top/umami.js"
+            id="umami-js"></script>
 </head>
 <body>
 
@@ -23,7 +23,8 @@
         </fieldset>
         <fieldset class="horizontal_item">
             <legend>添加图片</legend>
-            <label class="horizontal_item">额外文字(可选)<input type="text" name="text" placeholder="张三 06:30"></label>
+            <label class="horizontal_item">额外文字(可选)<input type="text" name="text"
+                                                                placeholder="张三 06:30"></label>
             <label class="horizontal_item"><input type="file" name="file" accept="image/*"></label>
         </fieldset>
     </form>
@@ -34,12 +35,16 @@
     </article>
 
     <script>
-        const num = document.forms['numForm'].num.value;
-        initCanvas(parseInt(num));
+        document.addEventListener("DOMContentLoaded", function () {
+            const num = document.forms['numForm'].num.value;
+            initCanvas(parseInt(num));
+            umami.trackEvent('Init Canvas', {num: num});
+        })
         // 监听 7人或8人 的选择
         document.forms['numForm'].num.forEach((item) => {
             item.addEventListener('change', (e) => {
                 initCanvas(parseInt(e.target.value));
+                umami.trackEvent('Change num', {num: e.target.value});
             });
         });
         document.forms['numForm'].file.addEventListener('change', (e) => {
@@ -57,9 +62,11 @@
                     document.forms['numForm'].text.value = '';
                 }
             }
+            umami.trackEvent('Add one Picture', {num: CanvasData.num, text: text, id: CanvasData.drawn});
         });
         document.getElementById("btn").addEventListener('click', () => {
             download()
+            umami.trackEvent('Download the Picture', {num: CanvasData.num, drawn: CanvasData.drawn});
         })
     </script>
 </main>
