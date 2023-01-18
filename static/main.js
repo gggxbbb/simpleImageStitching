@@ -24,7 +24,7 @@ function initCanvas(num, text="") {
     ctx.font = (canvas.width * 0.1 * 0.8) + "px Arial";
     ctx.fillStyle = "black";
     const date = new Date().toLocaleDateString();
-    ctx.fillText(date, canvas.width - date.length/2 * canvas.width * 0.1 * 0.8, canvas.height - canvas.width * 0.1 * 0.1);
+    ctx.fillText(date, canvas.width - (date.length/2+1/2) * canvas.width * 0.1 * 0.8, canvas.height - canvas.width * 0.1 * 0.1);
 
     ctx.fillText(text, canvas.width * 0.1 * 0.1, canvas.height - canvas.width * 0.1 * 0.1);
 
