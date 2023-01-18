@@ -18,17 +18,17 @@
     <form name="numForm" id="numForm">
         <fieldset class="horizontal_item">
             <legend>选择人数</legend>
-            <label class="horizontal_item"><input type="radio" name="num" value="7" checked>7人</label>
-            <label class="horizontal_item"><input type="radio" name="num" value="8">8人</label>
+            <label class="horizontal_item umami--click--num-change-to-7"><input type="radio" name="num" value="7" checked>7人</label>
+            <label class="horizontal_item umami--click--num-change-to-8"><input type="radio" name="num" value="8">8人</label>
         </fieldset>
         <fieldset class="horizontal_item">
             <legend>添加图片</legend>
-            <label class="horizontal_item">额外文字(可选)<input type="text" name="text"
+            <label class="horizontal_item">额外文字(可选)<input type="text" name="text" class="umami--click--change-text"
                                                                 placeholder="张三 06:30"></label>
-            <label class="horizontal_item"><input type="file" name="file" accept="image/*"></label>
+            <label class="horizontal_item"><input type="file" name="file" accept="image/*" class="umami--change--add-one-picture"></label>
         </fieldset>
     </form>
-    <button id="btn">生成</button>
+    <button id="btn" class="umami--click--generate-picture">生成</button>
 
     <article>
         <canvas id="canvas"></canvas>
@@ -38,13 +38,11 @@
         document.addEventListener("DOMContentLoaded", function () {
             const num = document.forms['numForm'].num.value;
             initCanvas(parseInt(num));
-            umami.trackEvent('Init Canvas', {num: num});
         })
         // 监听 7人或8人 的选择
         document.forms['numForm'].num.forEach((item) => {
             item.addEventListener('change', (e) => {
                 initCanvas(parseInt(e.target.value));
-                umami.trackEvent('Change num', {num: e.target.value});
             });
         });
         document.forms['numForm'].file.addEventListener('change', (e) => {
@@ -62,11 +60,9 @@
                     document.forms['numForm'].text.value = '';
                 }
             }
-            umami.trackEvent('Add one Picture', {num: CanvasData.num, text: text, id: CanvasData.drawn});
         });
         document.getElementById("btn").addEventListener('click', () => {
             download()
-            umami.trackEvent('Download the Picture', {num: CanvasData.num, drawn: CanvasData.drawn});
         })
     </script>
 </main>
