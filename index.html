@@ -16,19 +16,20 @@
     <h1>小组图片拼接</h1>
     <!-- 选择7人或8人 -->
     <form name="numForm" id="numForm">
-        <fieldset class="horizontal_item">
+        <fieldset id="num_choice">
             <legend>选择人数</legend>
-            <label class="horizontal_item"><input type="radio" name="num" value="7"
-                                                  checked>7人</label>
-            <label class="horizontal_item"><input type="radio" name="num"
-                                                  value="8">8人</label>
+            <label><input type="radio" name="num" value="7"
+                          checked>7人</label>
+            <label><input type="radio" name="num"
+                          value="8">8人</label>
         </fieldset>
-        <fieldset class="horizontal_item">
+        <fieldset>
             <legend>添加图片</legend>
-            <label class="horizontal_item">额外文字(可选)<input type="text" name="text"
-                                                                class="umami--click--change-text"
-                                                                placeholder="张三 06:30"></label>
-            <label class="horizontal_item"><input type="file" name="file" accept="image/*"></label>
+            <label>额外文字(可选)<input type="text" name="text"
+                                        class="umami--click--change-text"
+                                        placeholder="张三 06:30"></label>
+            <label><input type="checkbox" name="fix" disabled>覆盖上一张</label>
+            <label><input type="file" name="file" accept="image/*"></label>
         </fieldset>
     </form>
     <button id="btn">生成</button>
@@ -51,6 +52,15 @@
                 umami.trackEvent("Init Canvas", {num: e.target.value});
             });
         });
+        document.forms['numForm'].fix.addEventListener('change', (e) => {
+            if (CanvasData.drawn===0){
+                e.target.checked = false;
+                e.target.disabled = true;
+            } else {
+                umami.trackEvent("Change Fix to" + e.target.checked, {fix: e.target.checked});
+                e.target.disabled = false;
+            }
+        });
         document.forms['numForm'].file.addEventListener('change', (e) => {
             const text = document.forms['numForm'].text.value;
             const file = e.target.files[0];
@@ -61,12 +71,17 @@
                 // noinspection JSValidateTypes
                 img.src = reader.result;
                 img.onload = function () {
+                    if (document.forms['numForm'].fix.checked && CanvasData.drawn > 0) {
+                        CanvasData.drawn--;
+                    }
                     drawPic(img, text);
                     e.target.value = '';
                     document.forms['numForm'].text.value = '';
+                    document.forms['numForm'].fix.checked = false;
                     umami.trackEvent("Add One Picture", {text: text, num: CanvasData.num, index: CanvasData.drawn});
                 }
             }
+            document.forms['numForm'].fix.disabled = false;
         });
         document.getElementById("btn").addEventListener('click', () => {
             download()
