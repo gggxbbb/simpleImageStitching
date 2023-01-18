@@ -18,14 +18,18 @@
     <form name="numForm" id="numForm">
         <fieldset class="horizontal_item">
             <legend>选择人数</legend>
-            <label class="horizontal_item umami--click--num-change-to-7"><input type="radio" name="num" value="7" checked>7人</label>
-            <label class="horizontal_item umami--click--num-change-to-8"><input type="radio" name="num" value="8">8人</label>
+            <label class="horizontal_item umami--click--num-change-to-7"><input type="radio" name="num" value="7"
+                                                                                checked>7人</label>
+            <label class="horizontal_item umami--click--num-change-to-8"><input type="radio" name="num"
+                                                                                value="8">8人</label>
         </fieldset>
         <fieldset class="horizontal_item">
             <legend>添加图片</legend>
-            <label class="horizontal_item">额外文字(可选)<input type="text" name="text" class="umami--click--change-text"
+            <label class="horizontal_item">额外文字(可选)<input type="text" name="text"
+                                                                class="umami--click--change-text"
                                                                 placeholder="张三 06:30"></label>
-            <label class="horizontal_item"><input type="file" name="file" accept="image/*" class="umami--change--add-one-picture"></label>
+            <label class="horizontal_item"><input type="file" name="file" accept="image/*"
+                                                  class="umami--change--add-one-picture"></label>
         </fieldset>
     </form>
     <button id="btn" class="umami--click--generate-picture">生成</button>
@@ -35,14 +39,16 @@
     </article>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        window.onload = function () {
             const num = document.forms['numForm'].num.value;
             initCanvas(parseInt(num));
-        })
+            umami.trackEvent("Init Canvas", {num: num});
+        }
         // 监听 7人或8人 的选择
         document.forms['numForm'].num.forEach((item) => {
             item.addEventListener('change', (e) => {
                 initCanvas(parseInt(e.target.value));
+                umami.trackEvent("Init Canvas", {num: e.target.value});
             });
         });
         document.forms['numForm'].file.addEventListener('change', (e) => {
@@ -58,13 +64,20 @@
                     drawPic(img, text);
                     e.target.value = '';
                     document.forms['numForm'].text.value = '';
+                    umami.trackEvent("Add One Picture", {text: text, num: CanvasData.num, index: CanvasData.drawn});
                 }
             }
         });
         document.getElementById("btn").addEventListener('click', () => {
             download()
+            umami.trackEvent("Download Picture", {num: CanvasData.num, drawn: CanvasData.drawn});
         })
     </script>
+
+    <footer>
+        <p>Open Source on <a href="https://github.com/gggxbbb/simpleImageStitching">Github</a></p>
+        <p>Deployed on Cloudflare Pages</p>
+    </footer>
 </main>
 
 </body>

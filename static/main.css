@@ -23,3 +23,8 @@ canvas {
     display:grid;
     grid-template-columns: 1fr 1fr;
 }
+
+footer {
+    margin-top: 1em;
+    text-align: center;
+}
