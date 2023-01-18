@@ -94,7 +94,6 @@
             item.addEventListener('change', (e) => {
                 const text = document.forms['numForm'].footer.value;
                 initCanvas(parseInt(e.target.value), text);
-                updateQueryString();
                 umami.trackEvent("Change Num to" + e.target.value, {num: e.target.value});
                 umami.trackEvent("Init Canvas", {num: e.target.value, text: text});
             });
@@ -106,7 +105,6 @@
                 document.forms['footerFrom'].footer.value = e.target.value;
                 const num = document.forms['numForm'].num.value;
                 initCanvas(parseInt(num), e.target.value);
-                updateQueryString();
             }
         });
         document.forms['footerFrom'].footer.addEventListener('input', (e) => {
@@ -114,7 +112,6 @@
                 document.forms['numForm'].footer.value = e.target.value;
                 const num = document.forms['numForm'].num.value;
                 initCanvas(parseInt(num), e.target.value);
-                updateQueryString();
             }
         });
 
@@ -136,6 +133,8 @@
                 document.forms['numForm'].fix.disabled = false;
                 document.forms['numForm'].team.disabled = true;
                 document.forms['footerFrom'].footer.disabled = true;
+                // 更新查询字符
+                updateQueryString();
             }
             const text = document.forms['numForm'].text.value; //图片额外文字
             const file = e.target.files[0];
