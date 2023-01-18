@@ -37,6 +37,7 @@
     <article>
         <canvas id="canvas"></canvas>
     </article>
+    <button id="btn2">生成</button>
 
     <script>
         window.onload = function () {
@@ -84,6 +85,10 @@
             document.forms['numForm'].fix.disabled = false;
         });
         document.getElementById("btn").addEventListener('click', () => {
+            download()
+            umami.trackEvent("Download Picture", {num: CanvasData.num, drawn: CanvasData.drawn});
+        })
+        document.getElementById("btn2").addEventListener('click', () => {
             download()
             umami.trackEvent("Download Picture", {num: CanvasData.num, drawn: CanvasData.drawn});
         })
