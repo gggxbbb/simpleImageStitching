@@ -68,9 +68,9 @@
             }
 
             const num = document.forms['numForm'].num.value;
-            const text = document.forms['numForm'].text.value;
+            const text = document.forms['numForm'].footer.value;
             initCanvas(parseInt(num), text);
-            umami.trackEvent("Init Canvas", {num: num});
+            umami.trackEvent("Init Canvas", {num: num, footer: text});
         }
 
         function genQueryString() {
