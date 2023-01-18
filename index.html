@@ -44,7 +44,7 @@
         <canvas id="canvas"></canvas>
     </article>
 
-    <form name="footerFrom">
+    <form name="footerForm">
         <label>底部额外文字(可选)<input type="text" name="footer"
                                         placeholder="张三组"
                                         maxlength="5"></label>
@@ -102,13 +102,13 @@
 
         // 监听 底部额外文字 的输入, 同步两个输入框
         document.forms['numForm'].footer.addEventListener('input', (e) => {
-            if (document.forms['footerFrom'].footer.value !== e.target.value) {
-                document.forms['footerFrom'].footer.value = e.target.value;
+            if (document.forms['footerForm'].footer.value !== e.target.value) {
+                document.forms['footerForm'].footer.value = e.target.value;
                 const num = document.forms['numForm'].num.value;
                 initCanvas(parseInt(num), e.target.value);
             }
         });
-        document.forms['footerFrom'].footer.addEventListener('input', (e) => {
+        document.forms['footerForm'].footer.addEventListener('input', (e) => {
             if (document.forms['numForm'].footer.value !== e.target.value) {
                 document.forms['numForm'].footer.value = e.target.value;
                 const num = document.forms['numForm'].num.value;
@@ -133,7 +133,7 @@
                 // 禁用 小组设置, 启用 是否覆盖上一张
                 document.forms['numForm'].fix.disabled = false;
                 document.forms['numForm'].team.disabled = true;
-                document.forms['footerFrom'].footer.disabled = true;
+                document.forms['footerForm'].footer.disabled = true;
                 // 更新查询字符
                 updateQueryString();
             }
