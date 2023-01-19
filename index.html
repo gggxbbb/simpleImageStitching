@@ -15,7 +15,7 @@
 <main class="container">
     <h1>小组图片拼接</h1>
     <!-- 选择7人或8人 -->
-    <form name="numForm" id="numForm">
+    <form name="numForm" id="numForm" onsubmit="return false">
         <fieldset class="form_root" name="team">
             <legend>小组设置(添加图片后不可修改)</legend>
             <fieldset id="num_choice">
@@ -44,7 +44,7 @@
         <canvas id="canvas"></canvas>
     </article>
 
-    <form name="footerForm">
+    <form name="footerForm" onsubmit="return false">
         <label>底部额外文字(可选)<input type="text" name="footer"
                                         placeholder="张三组"
                                         maxlength="5"></label>
@@ -95,7 +95,7 @@
             item.addEventListener('change', (e) => {
                 const text = document.forms['numForm'].footer.value;
                 initCanvas(parseInt(e.target.value), text);
-                umami.trackEvent("Change Num to" + e.target.value, {num: e.target.value});
+                umami.trackEvent("Change Num to " + e.target.value, {num: e.target.value});
                 umami.trackEvent("Init Canvas", {num: e.target.value, text: text});
             });
         });
@@ -122,7 +122,7 @@
                 e.target.checked = false;
                 e.target.disabled = true;
             } else {
-                umami.trackEvent("Change Fix to" + e.target.checked, {fix: e.target.checked});
+                umami.trackEvent("Change Fix to " + e.target.checked, {fix: e.target.checked});
                 e.target.disabled = false;
             }
         });
@@ -146,14 +146,20 @@
                 // noinspection JSValidateTypes
                 img.src = reader.result;
                 img.onload = function () {
-                    if (document.forms['numForm'].fix.checked && CanvasData.drawn > 0) {
+                    const toFix = document.forms['numForm'].fix.checked; //是否覆盖上一张
+                    if (toFix && CanvasData.drawn > 0) {
                         CanvasData.drawn--; //若需要覆盖上一张, 则减少已绘制的图片数量
                     }
                     drawPic(img, text);
                     e.target.value = '';
                     document.forms['numForm'].text.value = '';
                     document.forms['numForm'].fix.checked = false;
-                    umami.trackEvent("Add One Picture", {text: text, num: CanvasData.num, index: CanvasData.drawn});
+                    umami.trackEvent("Add One Picture", {
+                        text: text,
+                        num: CanvasData.num,
+                        index: CanvasData.drawn,
+                        fix: toFix
+                    });
                 }
             }
         });
