@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <title>小组图片拼接</title>
@@ -7,37 +7,44 @@
     <link rel="stylesheet" href="/static/main.css">
     <script src="/static/main.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script async defer data-website-id="04463641-ed4b-4d0f-af66-c66dec1b5d94" src="https://ana.evax.top/umami.js"
-            id="umami-js"></script>
+    <meta name="author" content="gggxbbb">
+    <meta name="description" content="小组图片拼接">
+    <meta name="keywords" content="小组图片拼接">
+    <script async defer data-website-id="04463641-ed4b-4d0f-af66-c66dec1b5d94"
+            src="https://ana.evax.top/umami.js"></script>
 </head>
 <body>
 
 <main class="container">
     <h1>小组图片拼接</h1>
-    <!-- 选择7人或8人 -->
+
     <form name="numForm" id="numForm" onsubmit="return false">
+        <!-- 小组设置-->
         <fieldset class="form_root" name="team">
             <legend>小组设置(添加图片后不可修改)</legend>
             <fieldset id="num_choice">
                 <legend>选择人数</legend>
-                <label><input type="radio" name="num" value="7"
-                              checked>7人</label>
-                <label><input type="radio" name="num"
-                              value="8">8人</label>
+                <label><input type="radio" name="num" value="7" checked>7人</label>
+                <label><input type="radio" name="num" value="8">8人</label>
             </fieldset>
-            <label>底部额外文字(可选)<input type="text" name="footer"
-                                            placeholder="张三组"
-                                            maxlength="5"></label>
+            <label>底部额外文字(可选)
+                <input type="text" name="footer" placeholder="张三组" maxlength="5">
+            </label>
         </fieldset>
+        <!-- 小组设置 END-->
+
+        <!-- 图片设置-->
         <fieldset class="form_root" name="pic">
             <legend>添加图片</legend>
-            <label>额外文字(可选)<input type="text" name="text"
-                                        maxlength="10"
-                                        placeholder="李四 07:30"></label>
+            <label>额外文字(可选)
+                <input type="text" name="text" maxlength="10" placeholder="李四 07:30">
+            </label>
             <label><input type="checkbox" name="fix" disabled>覆盖上一张</label>
             <label><input type="file" name="file" accept="image/*"></label>
         </fieldset>
+        <!-- 图片设置 END-->
     </form>
+
     <button id="btn">生成</button>
 
     <article>
@@ -116,17 +123,6 @@
             }
         });
 
-        // 监听 是否覆盖上一张 的选择
-        document.forms['numForm'].fix.addEventListener('change', (e) => {
-            if (CanvasData.drawn === 0) {
-                e.target.checked = false;
-                e.target.disabled = true;
-            } else {
-                umami.trackEvent("Change Fix to " + e.target.checked, {fix: e.target.checked});
-                e.target.disabled = false;
-            }
-        });
-
         // 监听 添加图片
         document.forms['numForm'].file.addEventListener('change', (e) => {
             if (CanvasData.drawn === 0) { //若是第一张图片
@@ -170,11 +166,7 @@
             download()
             umami.trackEvent("Download Picture", {num: CanvasData.num, drawn: CanvasData.drawn, footer: footer});
         })
-        document.getElementById("btn2").addEventListener('click', () => {
-            const footer = document.forms['numForm'].footer.value;
-            download()
-            umami.trackEvent("Download Picture", {num: CanvasData.num, drawn: CanvasData.drawn, footer: footer});
-        })
+        document.getElementById("btn2").onclick = document.getElementById("btn").onclick;
     </script>
 
     <footer>

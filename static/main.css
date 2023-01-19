@@ -1,7 +1,7 @@
 fieldset {
-    border: 1px solid #ccc;
-    padding: 0.5em 0.5em 0.5em 0.5em;
-    border-radius: 0.25em;
+    border: var(--border-width) solid var(--form-element-border-color);
+    border-radius: var(--border-radius);
+    padding: 0.5em;
 }
 
 fieldset.form_root {
